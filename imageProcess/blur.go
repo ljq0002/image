@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"image/draw"
 	"math"
+	"sort"
 )
 
 func (ic *ImageContainer) GaussianBlur(px int, rho float64) *ImageContainer {
@@ -90,4 +91,42 @@ func getGaussianWeight(im image.Image, dis *[][]float64, x, y int) color.RGBA {
 	}
 	_, _, _, a := im.At(x, y).RGBA()
 	return color.RGBA{R: uint8(R), G: uint8(G), B: uint8(B), A: uint8(a)}
+}
+
+func (ic *ImageContainer) MedianBlur(size int) *ImageContainer {
+	res := image.NewRGBA(ic.Bounds())
+	draw.Draw(res, ic.Bounds(), ic, ic.Bounds().Min, draw.Src)
+
+	rgbImage := image.NewRGBA(ic.Bounds())
+	draw.Draw(rgbImage, ic.Bounds(), ic, ic.Bounds().Min, draw.Src)
+
+	width := ic.Bounds().Dx()
+	height := ic.Bounds().Dy()
+	start := size / 2
+	for i := start; i < height-start; i++ {
+		for j := start; j < width-start; j++ {
+			r := make([]int, 0, size*size)
+			g := make([]int, 0, size*size)
+			b := make([]int, 0, size*size)
+			for m := i - start; m < i+start+1; m++ {
+				for n := j - start; n < j+start+1; n++ {
+					R, G, B, _ := rgbImage.At(n, m).RGBA()
+					r = append(r, int(R))
+					g = append(g, int(G))
+					b = append(b, int(B))
+				}
+			}
+			sort.Ints(r)
+			sort.Ints(g)
+			sort.Ints(b)
+			_, _, _, A := rgbImage.At(j, i).RGBA()
+			res.Set(j, i, color.RGBA{
+				R: uint8(r[size*size/2]),
+				G: uint8(g[size*size/2]),
+				B: uint8(b[size*size/2]),
+				A: uint8(A),
+			})
+		}
+	}
+	return &ImageContainer{Image: res}
 }

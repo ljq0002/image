@@ -32,6 +32,7 @@ go build hello.go
 ## Features
 * Blur
   - Gaussian
+  - Median
 * Coming SOON
 
 ## License
