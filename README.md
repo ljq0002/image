@@ -33,6 +33,7 @@ go build hello.go
 * Blur
   - Gaussian
   - Median
+  - Mean
 * Coming SOON
 
 ## License

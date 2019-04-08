@@ -130,3 +130,41 @@ func (ic *ImageContainer) MedianBlur(size int) *ImageContainer {
 	}
 	return &ImageContainer{Image: res}
 }
+
+func (ic *ImageContainer) MeanBlur(size int) *ImageContainer {
+	res := image.NewRGBA(ic.Bounds())
+	draw.Draw(res, ic.Bounds(), ic, ic.Bounds().Min, draw.Src)
+
+	rgbImage := image.NewRGBA(ic.Bounds())
+	draw.Draw(rgbImage, ic.Bounds(), ic, ic.Bounds().Min, draw.Src)
+
+	width := ic.Bounds().Dx()
+	height := ic.Bounds().Dy()
+
+	start := size / 2
+	px := uint32(size * size)
+	for i := start; i < height-start; i++ {
+		for j := start; j < width-start; j++ {
+			r, g, b := uint32(0), uint32(0), uint32(0)
+			for m := i - start; m < i+start+1; m++ {
+				for n := j - start; n < j+start+1; n++ {
+					R, G, B, _ := rgbImage.At(n, m).RGBA()
+					r += uint32(uint8(R))
+					g += uint32(uint8(G))
+					b += uint32(uint8(B))
+				}
+			}
+			_, _, _, A := rgbImage.At(j, i).RGBA()
+			r = r / px
+			g = g / px
+			b = b / px
+			res.Set(j, i, color.RGBA{
+				R: uint8(r),
+				G: uint8(g),
+				B: uint8(b),
+				A: uint8(A),
+			})
+		}
+	}
+	return &ImageContainer{Image: res}
+}
