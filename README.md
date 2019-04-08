@@ -9,7 +9,7 @@ go get github.com/ljq0002/image
 ```
 
 #### Create file `hello.go`
-```
+```go
 package main
 
 import "github.com/ljq0002/image/imageProcess"
