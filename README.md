@@ -37,6 +37,9 @@ go build hello.go
 * Convert Color
   - to gray
   - to binary
+* Resize
+  - sub image
+  - resize image
 
 ## License
 ljq0002/image source code is licensed under the MIT License.
