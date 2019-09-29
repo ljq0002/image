@@ -34,7 +34,9 @@ go build hello.go
   - Gaussian
   - Median
   - Mean
-* Coming SOON
+* Convert Color
+  - to gray
+  - to binary
 
 ## License
 ljq0002/image source code is licensed under the MIT License.
